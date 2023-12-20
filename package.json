@@ -1,0 +1,16 @@
+{
+  "name": "ziuq",
+  "version": "1.0.0",
+  "description": "A realtime quiz app",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Realtime",
+    "Quiz",
+    "SocketIo"
+  ],
+  "author": "Sahariar Alam Khandoker",
+  "license": "ISC"
+}
