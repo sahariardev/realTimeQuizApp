@@ -1,0 +1,19 @@
+<%- include('./partials/header') %>
+<script src="/socket.io/socket.io.js"></script>
+<div class="body-container">
+    <div>
+
+    </div>
+    <script>
+        const socket = io('http://localhost:8000/default');
+        socket.on('connect', () => {
+            console.log('Connected');
+        });
+
+        socket.on('ROOMS_UPDATED', (data) => {
+            console.log(data);
+        })
+
+    </script>
+</div>
+<%- include('./partials/footer') %>
