@@ -5,10 +5,12 @@ const {
     NEW_ROOM_ADDED_EVENT,
     UPDATE_ROOMS_EVENT,
     SERVER_PORT,
-    JOIN_ROOM_EVENT
+    JOIN_ROOM_EVENT,
+    isValidRoom
 } = require('./helper/helper')
 const bodyParser = require('body-parser');
 const Room = require("./models/room");
+const {all} = require("express/lib/application");
 
 const app = express();
 const allRooms = [];
@@ -57,7 +59,19 @@ io.of('default').on('connection', (socket) => {
         });
     });
 
-    socket.on(JOIN_ROOM_EVENT, (data) => {
+    socket.on(JOIN_ROOM_EVENT, (roomId, callBack) => {
+        if (isValidRoom(roomId)) {
+            socket.join(roomId);
+            callBack({
+                status: 'OK',
+                message: 'Successfully Joined the room'
+            });
 
+        } else {
+            callBack({
+                status: 'FAILED',
+                message: `Failed to join the room ${roomId}`
+            });
+        }
     });
 });

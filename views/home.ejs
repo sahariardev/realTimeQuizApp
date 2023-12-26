@@ -14,7 +14,7 @@
 
         socket.on('ROOMS_UPDATED', (data) => {
             cleanDiv(roomsContainerHtml);
-            data.rooms.forEach((room)=>{
+            data.rooms.forEach((room) => {
                 roomsContainerHtml.append(getRoomDiv(room));
             });
         });
@@ -31,8 +31,12 @@
             div.setAttribute('data-room-id', roomId);
 
             div.addEventListener('click', (e) => {
-                console.log(e.target.getAttribute('data-room-id'));
-                //send join room request
+                socket.emit('JOIN_ROOM', {
+                    roomId: e.target.getAttribute('data-room-id')
+                }, (response) => {
+                    console.log(response);
+                });
+
                 // if joining success then render quiz view
             });
 
