@@ -1,18 +1,43 @@
 <%- include('./partials/header') %>
 <script src="/socket.io/socket.io.js"></script>
 <div class="body-container">
-    <div>
+    <div id="rooms-container">
 
     </div>
     <script>
+        const roomsContainerHtml = document.getElementById('rooms-container');
+
         const socket = io('http://localhost:8000/default');
         socket.on('connect', () => {
             console.log('Connected');
         });
 
         socket.on('ROOMS_UPDATED', (data) => {
-            console.log(data);
-        })
+            cleanDiv(roomsContainerHtml);
+            data.rooms.forEach((room)=>{
+                roomsContainerHtml.append(getRoomDiv(room));
+            });
+        });
+
+
+        const cleanDiv = (elem) => {
+            elem.innerHTML = '';
+        }
+
+        const getRoomDiv = ({roomName, roomId}) => {
+            const div = document.createElement('div');
+            div.innerHTML = roomName;
+            div.classList.add('room-container');
+            div.setAttribute('data-room-id', roomId);
+
+            div.addEventListener('click', (e) => {
+                console.log(e.target.getAttribute('data-room-id'));
+                //send join room request
+                // if joining success then render quiz view
+            });
+
+            return div;
+        }
 
     </script>
 </div>

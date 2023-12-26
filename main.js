@@ -4,7 +4,8 @@ const {
     roomUpdateEventEmitter,
     NEW_ROOM_ADDED_EVENT,
     UPDATE_ROOMS_EVENT,
-    SERVER_PORT
+    SERVER_PORT,
+    JOIN_ROOM_EVENT
 } = require('./helper/helper')
 const bodyParser = require('body-parser');
 const Room = require("./models/room");
@@ -54,5 +55,9 @@ io.of('default').on('connection', (socket) => {
             rooms: rooms,
             newRoom: newRoom
         });
+    });
+
+    socket.on(JOIN_ROOM_EVENT, (data) => {
+
     });
 });
