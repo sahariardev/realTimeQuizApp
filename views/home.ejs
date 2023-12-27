@@ -4,8 +4,35 @@
     <div id="rooms-container">
 
     </div>
+    <div id="quiz-container" class="hide">
+        <div>
+            Quiz Section
+        </div>
+        <div id="quiz-body">
+            <div class="question">
+                What the full meaning of JVM?
+            </div>
+            <div class="options">
+                <input type="radio" id="html" name="fav_language" value="HTML">
+                <label for="html">HTML</label><br>
+                <input type="radio" id="css" name="fav_language" value="CSS">
+                <label for="css">CSS</label><br>
+                <input type="radio" id="javascript" name="fav_language" value="JavaScript">
+                <label for="javascript">JavaScript</label>
+            </div>
+            <div class="btn">
+                Submit
+            </div>
+        </div>
+        <div id="quiz-section-footer">
+            <div class="btn" id="back-to-room-btn">Back To Rooms</div>
+        </div>
+    </div>
     <script>
         const roomsContainerHtml = document.getElementById('rooms-container');
+        const quizContainerHtml = document.getElementById('quiz-container');
+        const backToRoomBtn = document.getElementById('back-to-room-btn');
+        const quizBodyHtml = document.getElementById('quiz-body');
 
         const socket = io('http://localhost:8000/default');
         socket.on('connect', () => {
@@ -19,6 +46,11 @@
             });
         });
 
+        backToRoomBtn.addEventListener('click', () => {
+            roomsContainerHtml.classList.remove('hide');
+            quizContainerHtml.classList.add('hide');
+            quizContainerHtml.classList.remove('flex');
+        })
 
         const cleanDiv = (elem) => {
             elem.innerHTML = '';
@@ -34,13 +66,49 @@
                 socket.emit('JOIN_ROOM', {
                     roomId: e.target.getAttribute('data-room-id')
                 }, (response) => {
-                    console.log(response);
+                    if (response.status === 'OK') {
+                        roomsContainerHtml.classList.add('hide');
+                        quizContainerHtml.classList.remove('hide');
+                        quizContainerHtml.classList.add('flex');
+
+                    } else {
+                        roomsContainerHtml.classList.add('hide');
+                        alert(response.message);
+                    }
                 });
 
-                // if joining success then render quiz view
             });
 
             return div;
+        }
+
+        const renderQuestion = ({question, options, qId}) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question');
+            questionDiv.innerHTML = question;
+            quizBodyHtml.append(questionDiv);
+
+            const optionDiv = document.createElement('div');
+            optionDiv.classList.add('options');
+
+            for (option of options) {
+                const input = document.createElement('input');
+                input.setAttribute('name', qId);
+                input.setAttribute('value', option);
+                optionDiv.append(input);
+
+                const label = document.createElement('label');
+                label.innerHTML = option;
+                optionDiv.append(label)
+            }
+
+            quizBodyHtml.append(optionDiv);
+
+            const buttonDiv = document.createElement('div');
+            buttonDiv.classList.add('btn');
+            buttonDiv.innerHTML = 'Submit';
+
+            quizBodyHtml.append(buttonDiv);
         }
 
     </script>

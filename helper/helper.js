@@ -5,7 +5,8 @@ const UPDATE_ROOMS_EVENT = 'ROOMS_UPDATED';
 const JOIN_ROOM_EVENT = 'JOIN_ROOM';
 const SERVER_PORT = 8000;
 
-const isValidRoom = (roomId) => {
+const isValidRoom = ({roomId}, allRooms) => {
+    console.log(roomId);
     for (room of allRooms) {
         if (room.roomId == roomId) {
             return true;

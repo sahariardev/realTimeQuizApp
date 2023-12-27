@@ -60,7 +60,7 @@ io.of('default').on('connection', (socket) => {
     });
 
     socket.on(JOIN_ROOM_EVENT, (roomId, callBack) => {
-        if (isValidRoom(roomId)) {
+        if (isValidRoom(roomId, allRooms)) {
             socket.join(roomId);
             callBack({
                 status: 'OK',
