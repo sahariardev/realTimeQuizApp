@@ -62,9 +62,25 @@
             div.classList.add('room-container');
             div.setAttribute('data-room-id', roomId);
 
-            div.addEventListener('click', (e) => {
+            const userIdSpan = document.createElement('span');
+            userIdSpan.classList.add('user-id');
+            const userIdInput = document.createElement('input');
+            userIdInput.classList.add('options');
+            userIdInput.setAttribute('placeholder', 'username')
+            userIdInput.setAttribute('type', 'text');
+
+            const btn = document.createElement('button');
+            btn.innerHTML = 'Join'
+
+            div.append(userIdSpan);
+            div.append(userIdInput);
+            div.append(btn);
+
+            btn.addEventListener('click', (e) => {
+                console.log(e.target.parentElement.querySelector('input').value);
                 socket.emit('JOIN_ROOM', {
-                    roomId: e.target.getAttribute('data-room-id')
+                    roomId: e.target.parentElement.getAttribute('data-room-id'),
+                    userId: e.target.parentElement.querySelector('input').value
                 }, (response) => {
                     if (response.status === 'OK') {
                         roomsContainerHtml.classList.add('hide');

@@ -11,7 +11,7 @@ const {
 } = require('./helper/helper')
 const bodyParser = require('body-parser');
 const Room = require("./models/room");
-const {all} = require("express/lib/application");
+const RoomUser = require("./models/room_user");
 
 const app = express();
 const allRooms = [];
@@ -72,9 +72,23 @@ io.of('default').on('connection', (socket) => {
         });
     });
 
-    socket.on(JOIN_ROOM_EVENT, ({roomId}, callBack) => {
+    socket.on(JOIN_ROOM_EVENT, ({roomId, userId}, callBack) => {
         if (isValidRoom(roomId, allRooms)) {
+
+            const room = getRoom(roomId, allRooms);
+
+            if (room.isUserAlreadyExistInThisRoom(userId)) {
+                callBack({
+                    status: 'FAILED',
+                    message: `Failed to join the room ${roomId}. Someone with same name already joined.`
+                });
+
+                return;
+            }
+
             socket.join(roomId);
+            room.addRoomUser(new RoomUser(userId));
+
             callBack({
                 status: 'OK',
                 message: 'Successfully Joined the room'

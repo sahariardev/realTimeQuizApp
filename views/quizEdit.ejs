@@ -62,6 +62,17 @@
     });
 
     addQuestion.addEventListener('click', () => {
+        const data = {
+            question: questionInput.value,
+            options: []
+        }
+
+        for (elem of document.querySelectorAll('.options')) {
+            data.push(elem.value);
+        }
+
+        //send this data to backend using socket
+
         cleanQuestionContainer();
     });
 
