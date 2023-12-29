@@ -6,7 +6,8 @@ const {
     UPDATE_ROOMS_EVENT,
     SERVER_PORT,
     JOIN_ROOM_EVENT,
-    isValidRoom
+    isValidRoom,
+    getRoom
 } = require('./helper/helper')
 const bodyParser = require('body-parser');
 const Room = require("./models/room");
@@ -30,6 +31,18 @@ app.get('/', (req, res) => {
 app.get('/admin', (req, res) => {
     res.render('admin', {title: 'Admin Page'});
 })
+
+app.get('/admin/:roomId', (req, res) => {
+    const roomId = req.params.roomId;
+    const validRoom = isValidRoom(roomId, allRooms);
+    const data = {title: 'Admin Quiz Page', isValidRoom: validRoom};
+
+    if (validRoom) {
+      data['room'] = getRoom(roomId, allRooms);
+    }
+
+    res.render('quizEdit', data);
+});
 
 app.post('/admin', (req, res) => {
     const roomName = req.body.roomName;
@@ -59,7 +72,7 @@ io.of('default').on('connection', (socket) => {
         });
     });
 
-    socket.on(JOIN_ROOM_EVENT, (roomId, callBack) => {
+    socket.on(JOIN_ROOM_EVENT, ({roomId}, callBack) => {
         if (isValidRoom(roomId, allRooms)) {
             socket.join(roomId);
             callBack({

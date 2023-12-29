@@ -1,0 +1,86 @@
+<%- include('./partials/header') %>
+<div class="body-container">
+    <h1 id="room-title" data-room-id="<%= room.roomId %>">Admin In Room: <%= room.roomName %></h1>
+    <div class="form-container">
+        <div>
+            <div class="question-sections">
+                <span>Question</span>
+                <input type="text" name="question" class="question" placeholder="Question">
+            </div>
+
+            <div class="question-sections">
+                <span class="option-title">Option 1</span>
+                <input type="text" class="options">
+            </div>
+
+            <div class="question-sections">
+                <span class="option-title">Option 2</span>
+                <input type="text" class="options">
+            </div>
+
+            <div class="additional-option">
+
+            </div>
+
+            <button type="button" id="add-new-option-btn">Add New Option</button>
+            <button type="button" id="add-question">Add Question</button>
+        </div>
+    </div>
+</div>
+<script>
+    const addNewOptionBtn = document.getElementById('add-new-option-btn');
+    const addQuestion = document.getElementById('add-question');
+    const additionOptionSection = document.querySelector('.additional-option');
+    const questionInput = document.querySelector('.question');
+
+    addNewOptionBtn.addEventListener('click', () => {
+        const optionSectionDiv = document.createElement('div');
+        optionSectionDiv.classList.add('question-sections');
+
+        const optionTitleSpan = document.createElement('span');
+        optionTitleSpan.classList.add('option-title');
+        const optionInput = document.createElement('input');
+        optionInput.classList.add('options');
+        optionInput.setAttribute('type', 'text');
+
+        const removeLink = document.createElement('a');
+        removeLink.innerHTML = 'Remove';
+        removeLink.classList.add('remove-link');
+
+        removeLink.addEventListener('click', (e) => {
+            e.target.parentElement.remove();
+            generateOptionTitles();
+        });
+
+        optionSectionDiv.append(optionTitleSpan);
+        optionSectionDiv.append(optionInput);
+        optionSectionDiv.append(removeLink);
+
+        additionOptionSection.append(optionSectionDiv);
+
+        generateOptionTitles();
+    });
+
+    addQuestion.addEventListener('click', () => {
+        cleanQuestionContainer();
+    });
+
+    const generateOptionTitles = () => {
+        let itemCount = 0;
+        for (elem of document.querySelectorAll('.option-title')) {
+            itemCount++;
+            elem.innerHTML = `Option ${itemCount} `;
+        }
+    }
+
+    const cleanQuestionContainer = () => {
+        additionOptionSection.innerHTML = '';
+        for (elem of document.querySelectorAll('.options')) {
+            elem.value = '';
+        }
+        questionInput.value = '';
+    }
+
+</script>
+
+<%- include('./partials/footer') %>

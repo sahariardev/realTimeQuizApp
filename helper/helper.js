@@ -5,7 +5,7 @@ const UPDATE_ROOMS_EVENT = 'ROOMS_UPDATED';
 const JOIN_ROOM_EVENT = 'JOIN_ROOM';
 const SERVER_PORT = 8000;
 
-const isValidRoom = ({roomId}, allRooms) => {
+const isValidRoom = (roomId, allRooms) => {
     console.log(roomId);
     for (room of allRooms) {
         if (room.roomId == roomId) {
@@ -16,4 +16,22 @@ const isValidRoom = ({roomId}, allRooms) => {
     return false;
 }
 
-module.exports = {roomUpdateEventEmitter, NEW_ROOM_ADDED_EVENT, UPDATE_ROOMS_EVENT, SERVER_PORT, JOIN_ROOM_EVENT, isValidRoom}
+const getRoom = (roomId, allRooms) => {
+    for (room of allRooms) {
+        if (room.roomId == roomId) {
+            return room;
+        }
+    }
+
+    return null;
+}
+
+module.exports = {
+    roomUpdateEventEmitter,
+    NEW_ROOM_ADDED_EVENT,
+    UPDATE_ROOMS_EVENT,
+    SERVER_PORT,
+    JOIN_ROOM_EVENT,
+    isValidRoom,
+    getRoom
+}
