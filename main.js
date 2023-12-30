@@ -78,15 +78,17 @@ io.of('default').on('connection', (socket) => {
 
     socket.on(ADD_QUESTION_EVENT, (data, roomId) => {
         const room = getRoom(roomId, allRooms);
+
         const question = new Question(data.question, data.options, data.answer);
         room.addQuestion(question);
-        io.to(roomId).emit(UPDATE_QUESTIONS_EVENT, room.questions);
+
+        io.of('default').to(roomId).emit(UPDATE_QUESTIONS_EVENT, room.questions);
     });
 
     socket.on(ADMIN_JOIN_ROOM_EVENT, (roomId) => {
         socket.join(roomId);
         const room = getRoom(roomId, allRooms);
-        io.to(roomId).emit(UPDATE_QUESTIONS_EVENT, room.questions);
+        io.of('default').to(roomId).emit(UPDATE_QUESTIONS_EVENT, room.questions);
     });
 
     socket.on(JOIN_ROOM_EVENT, ({roomId, userId}, callBack) => {

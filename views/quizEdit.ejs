@@ -2,7 +2,7 @@
 <script src="/socket.io/socket.io.js"></script>
 <div class="body-container">
     <h1 id="room-title" data-room-id="<%= room.roomId %>">Admin In Room: <%= room.roomName %></h1>
-    <div class="body-container">
+    <div class="section-body-container">
         <div class="question-form-container section-container">
             <div>
                 <div class="question-sections">
@@ -118,6 +118,7 @@
     }
 
     socket.on('QUESTION_UPDATED', (questions) => {
+        questionContainerElem.innerHTML = '';
         let count = 0;
         for (const question of questions) {
             count++;
@@ -140,7 +141,7 @@
             count++;
 
             const optionElem = document.createElement('div');
-            optionElem.innerHTML = option;
+            optionElem.innerHTML = `Option ${count}: ${option}`;
             divElem.append(optionElem)
         }
 
