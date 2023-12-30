@@ -122,9 +122,17 @@
             buttonDiv.addEventListener('click', (e) => {
                 const answer = document.querySelector('input[name="' + id + '"]:checked').value;
                 socket.emit('USER_ANSWER', {questionId: id, answer: answer});
+                showWait();
             });
 
             quizBodyHtml.append(buttonDiv);
+        }
+
+        const showWait = () => {
+            const waitSpan = document.createElement('div');
+            waitSpan.classList.add('wait-container')
+            quizBodyHtml.innerHTML = '';
+            quizBodyHtml.append(waitSpan);
         }
 
     </script>
