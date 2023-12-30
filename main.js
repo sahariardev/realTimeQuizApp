@@ -11,6 +11,7 @@ const {
     ADMIN_JOIN_ROOM_EVENT,
     SHOW_QUESTION_EVENT,
     REQUEST_TO_SHOW_QUESTION_EVENT,
+    USER_ANSWER_EVENT,
     isValidRoom,
     getRoom
 } = require('./helper/helper')
@@ -18,6 +19,7 @@ const bodyParser = require('body-parser');
 const Room = require("./models/room");
 const RoomUser = require("./models/room_user");
 const Question = require("./models/question");
+const scoketUserIdMapping = {};
 
 const app = express();
 const allRooms = [];
@@ -100,19 +102,21 @@ io.of('default').on('connection', (socket) => {
         io.of('default').to(roomId).emit(SHOW_QUESTION_EVENT, question);
     });
 
+    socket.on(USER_ANSWER_EVENT, (data) => {
+        //get the room id
+        const userId = scoketUserIdMapping[socket.id];
+    });
+
     socket.on(JOIN_ROOM_EVENT, ({roomId, userId}, callBack) => {
         if (isValidRoom(roomId, allRooms)) {
 
             const room = getRoom(roomId, allRooms);
 
             if (room.isUserAlreadyExistInThisRoom(userId)) {
-                callBack({
-                    status: 'FAILED',
-                    message: `Failed to join the room ${roomId}. Someone with same name already joined.`
-                });
-
-                return;
+                delete scoketUserIdMapping[socket.id];
             }
+
+            scoketUserIdMapping[socket.id] = userId;
 
             socket.join(roomId);
             room.addRoomUser(new RoomUser(userId));

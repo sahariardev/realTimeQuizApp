@@ -119,8 +119,8 @@
             buttonDiv.innerHTML = 'Submit';
 
             buttonDiv.addEventListener('click', (e) => {
-                //get the  checked value
-                // submit the value to backed
+                const answer = document.querySelector('input[name="'+id+'"]:checked').value;
+                socket.emit('USER_ANSWER', {questionId: id, answer: answer});
             });
 
             quizBodyHtml.append(buttonDiv);
