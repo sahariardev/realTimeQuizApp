@@ -149,6 +149,17 @@
         answerElem.innerHTML = `Answer is : ${question.rightAnswer}`;
         divElem.append(answerElem);
 
+        const btnElem = document.createElement('button');
+        btnElem.innerHTML = 'Show';
+        btnElem.addEventListener('click', (e) => {
+            socket.emit('REQUEST_TO_SHOW_QUESTION', {
+                questionId: e.target.parentElement.getAttribute('data-question-id'),
+                roomId: roomId
+            });
+        });
+
+        divElem.append(btnElem);
+
         questionContainerElem.append(divElem);
     }
 

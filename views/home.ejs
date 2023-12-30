@@ -9,20 +9,7 @@
             Quiz Section
         </div>
         <div id="quiz-body">
-            <div class="question">
-                What the full meaning of JVM?
-            </div>
-            <div class="options">
-                <input type="radio" id="html" name="fav_language" value="HTML">
-                <label for="html">HTML</label><br>
-                <input type="radio" id="css" name="fav_language" value="CSS">
-                <label for="css">CSS</label><br>
-                <input type="radio" id="javascript" name="fav_language" value="JavaScript">
-                <label for="javascript">JavaScript</label>
-            </div>
-            <div class="btn">
-                Submit
-            </div>
+
         </div>
         <div id="quiz-section-footer">
             <div class="btn" id="back-to-room-btn">Back To Rooms</div>
@@ -45,6 +32,10 @@
                 roomsContainerHtml.append(getRoomDiv(room));
             });
         });
+
+        socket.on('SHOW_QUESTION', (question) => {
+            renderQuestion(question);
+        })
 
         backToRoomBtn.addEventListener('click', () => {
             roomsContainerHtml.classList.remove('hide');
@@ -97,7 +88,7 @@
             return div;
         }
 
-        const renderQuestion = ({question, options, qId}) => {
+        const renderQuestion = ({question, options, id}) => {
             const questionDiv = document.createElement('div');
             questionDiv.classList.add('question');
             questionDiv.innerHTML = question;
@@ -106,15 +97,19 @@
             const optionDiv = document.createElement('div');
             optionDiv.classList.add('options');
 
-            for (option of options) {
+            for (const option of options) {
+                const optionContainer = document.createElement('div');
                 const input = document.createElement('input');
-                input.setAttribute('name', qId);
+                input.setAttribute('name', id);
                 input.setAttribute('value', option);
-                optionDiv.append(input);
+                input.setAttribute('type', 'radio');
+                optionContainer.append(input);
 
                 const label = document.createElement('label');
                 label.innerHTML = option;
-                optionDiv.append(label)
+
+                optionContainer.append(label);
+                optionDiv.append(optionContainer);
             }
 
             quizBodyHtml.append(optionDiv);
@@ -122,6 +117,11 @@
             const buttonDiv = document.createElement('div');
             buttonDiv.classList.add('btn');
             buttonDiv.innerHTML = 'Submit';
+
+            buttonDiv.addEventListener('click', (e) => {
+                //get the  checked value
+                // submit the value to backed
+            });
 
             quizBodyHtml.append(buttonDiv);
         }

@@ -9,6 +9,8 @@ const {
     ADD_QUESTION_EVENT,
     UPDATE_QUESTIONS_EVENT,
     ADMIN_JOIN_ROOM_EVENT,
+    SHOW_QUESTION_EVENT,
+    REQUEST_TO_SHOW_QUESTION_EVENT,
     isValidRoom,
     getRoom
 } = require('./helper/helper')
@@ -89,6 +91,13 @@ io.of('default').on('connection', (socket) => {
         socket.join(roomId);
         const room = getRoom(roomId, allRooms);
         io.of('default').to(roomId).emit(UPDATE_QUESTIONS_EVENT, room.questions);
+    });
+
+    socket.on(REQUEST_TO_SHOW_QUESTION_EVENT, ({questionId, roomId}) => {
+        const room = getRoom(roomId, allRooms);
+        const question = room.getQuestion(questionId);
+
+        io.of('default').to(roomId).emit(SHOW_QUESTION_EVENT, question);
     });
 
     socket.on(JOIN_ROOM_EVENT, ({roomId, userId}, callBack) => {

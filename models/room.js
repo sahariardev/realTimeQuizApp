@@ -27,7 +27,7 @@ class Room {
     }
 
     getQuestion(id) {
-        return this.questions().filter(question => question.id === id)[0];
+        return this.questions.filter(question => question.id === id)[0];
     }
 
     isUserAlreadyExistInThisRoom(userId) {
