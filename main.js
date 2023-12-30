@@ -103,8 +103,10 @@ io.of('default').on('connection', (socket) => {
     });
 
     socket.on(USER_ANSWER_EVENT, (data) => {
-        //get the room id
+        const roomId = Object.keys(socket.rooms)[1]
         const userId = scoketUserIdMapping[socket.id];
+        const room = getRoom(roomId, allRooms);
+        room.addUserAnswer(data.questionId, data.answer, userId);
     });
 
     socket.on(JOIN_ROOM_EVENT, ({roomId, userId}, callBack) => {
@@ -114,12 +116,14 @@ io.of('default').on('connection', (socket) => {
 
             if (room.isUserAlreadyExistInThisRoom(userId)) {
                 delete scoketUserIdMapping[socket.id];
+
+            } else {
+                room.addRoomUser(new RoomUser(userId));
             }
 
             scoketUserIdMapping[socket.id] = userId;
 
             socket.join(roomId);
-            room.addRoomUser(new RoomUser(userId));
 
             callBack({
                 status: 'OK',

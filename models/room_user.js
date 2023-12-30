@@ -5,7 +5,7 @@ class RoomUser {
     }
 
     addAnswer(answer) {
-        this.answers = answer;
+        this.answers.push(answer);
     }
 
 }

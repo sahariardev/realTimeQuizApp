@@ -35,13 +35,13 @@
 
         socket.on('SHOW_QUESTION', (question) => {
             renderQuestion(question);
-        })
+        });
 
         backToRoomBtn.addEventListener('click', () => {
             roomsContainerHtml.classList.remove('hide');
             quizContainerHtml.classList.add('hide');
             quizContainerHtml.classList.remove('flex');
-        })
+        });
 
         const cleanDiv = (elem) => {
             elem.innerHTML = '';
@@ -89,6 +89,7 @@
         }
 
         const renderQuestion = ({question, options, id}) => {
+            quizBodyHtml.innerHTML = '';
             const questionDiv = document.createElement('div');
             questionDiv.classList.add('question');
             questionDiv.innerHTML = question;
@@ -119,7 +120,7 @@
             buttonDiv.innerHTML = 'Submit';
 
             buttonDiv.addEventListener('click', (e) => {
-                const answer = document.querySelector('input[name="'+id+'"]:checked').value;
+                const answer = document.querySelector('input[name="' + id + '"]:checked').value;
                 socket.emit('USER_ANSWER', {questionId: id, answer: answer});
             });
 

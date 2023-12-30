@@ -1,3 +1,5 @@
+const UserAnswer = require("./user_answer");
+
 class Room {
     constructor(roomName, roomId) {
         this.roomName = roomName;
@@ -32,6 +34,13 @@ class Room {
 
     isUserAlreadyExistInThisRoom(userId) {
         return this.getRoomUsers().filter(user => user.id === userId).length > 0;
+    }
+
+    addUserAnswer(questionId, answer, userId) {
+        const question = this.getQuestion(questionId);
+        const userAnswer = new UserAnswer(question, answer);
+        const user = this.getRoomUser(userId);
+        user.addAnswer(userAnswer);
     }
 }
 
