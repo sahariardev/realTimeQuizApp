@@ -1,37 +1,60 @@
 <%- include('./partials/header') %>
+<script src="/socket.io/socket.io.js"></script>
 <div class="body-container">
     <h1 id="room-title" data-room-id="<%= room.roomId %>">Admin In Room: <%= room.roomName %></h1>
-    <div class="form-container">
-        <div>
-            <div class="question-sections">
-                <span>Question</span>
-                <input type="text" name="question" class="question" placeholder="Question">
+    <div class="body-container">
+        <div class="question-form-container section-container">
+            <div>
+                <div class="question-sections">
+                    <span>Question</span>
+                    <input type="text" name="question" class="question" placeholder="Question">
+                </div>
+
+                <div class="question-sections">
+                    <span class="option-title">Option 1</span>
+                    <input type="text" class="options">
+                </div>
+
+                <div class="question-sections">
+                    <span class="option-title">Option 2</span>
+                    <input type="text" class="options">
+                </div>
+
+                <div class="additional-option">
+
+                </div>
+
+                <div class="answer-sections">
+                    <span class="title">Answer</span>
+                    <input type="text" class="answer">
+                </div>
+
+                <button type="button" id="add-new-option-btn">Add New Option</button>
+                <button type="button" id="add-question">Add Question</button>
             </div>
+        </div>
+        <div class="question-container section-container">
 
-            <div class="question-sections">
-                <span class="option-title">Option 1</span>
-                <input type="text" class="options">
-            </div>
-
-            <div class="question-sections">
-                <span class="option-title">Option 2</span>
-                <input type="text" class="options">
-            </div>
-
-            <div class="additional-option">
-
-            </div>
-
-            <button type="button" id="add-new-option-btn">Add New Option</button>
-            <button type="button" id="add-question">Add Question</button>
         </div>
     </div>
 </div>
 <script>
+    // socket connection
+    const socket = io('http://localhost:8000/default');
+    socket.on('connect', () => {
+        console.log('Connected');
+    });
+
     const addNewOptionBtn = document.getElementById('add-new-option-btn');
+    const roomTitleElem = document.getElementById('room-title');
     const addQuestion = document.getElementById('add-question');
     const additionOptionSection = document.querySelector('.additional-option');
     const questionInput = document.querySelector('.question');
+    const answerInput = document.querySelector('.answer');
+    const questionContainerElem = document.querySelector('.question-container');
+    const roomId = roomTitleElem.getAttribute('data-room-id');
+
+    socket.emit('ADMIN_JOIN_ROOM', roomId);
 
     addNewOptionBtn.addEventListener('click', () => {
         const optionSectionDiv = document.createElement('div');
@@ -64,21 +87,22 @@
     addQuestion.addEventListener('click', () => {
         const data = {
             question: questionInput.value,
-            options: []
+            options: [],
+            answer: answerInput.value
         }
 
-        for (elem of document.querySelectorAll('.options')) {
-            data.push(elem.value);
+        for (const elem of document.querySelectorAll('.options')) {
+            data.options.push(elem.value);
         }
 
-        //send this data to backend using socket
+        socket.emit('ADD_QUESTION', data, roomId);
 
         cleanQuestionContainer();
     });
 
     const generateOptionTitles = () => {
         let itemCount = 0;
-        for (elem of document.querySelectorAll('.option-title')) {
+        for (const elem of document.querySelectorAll('.option-title')) {
             itemCount++;
             elem.innerHTML = `Option ${itemCount} `;
         }
@@ -90,6 +114,41 @@
             elem.value = '';
         }
         questionInput.value = '';
+        answerInput.value = '';
+    }
+
+    socket.on('QUESTION_UPDATED', (questions) => {
+        let count = 0;
+        for (const question of questions) {
+            count++;
+            renderQuestion(question, count);
+        }
+    });
+
+    const renderQuestion = (question, questionNumber) => {
+        const divElem = document.createElement('div');
+        divElem.classList.add('question-view-container');
+        divElem.setAttribute('data-question-id', question.id);
+
+        const q = document.createElement('div');
+        q.innerHTML = `${questionNumber}. ${question.question}`;
+
+        divElem.append(q);
+
+        let count = 0;
+        for (const option of question.options) {
+            count++;
+
+            const optionElem = document.createElement('div');
+            optionElem.innerHTML = option;
+            divElem.append(optionElem)
+        }
+
+        const answerElem = document.createElement('div');
+        answerElem.innerHTML = `Answer is : ${question.rightAnswer}`;
+        divElem.append(answerElem);
+
+        questionContainerElem.append(divElem);
     }
 
 </script>

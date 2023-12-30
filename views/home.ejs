@@ -77,7 +77,6 @@
             div.append(btn);
 
             btn.addEventListener('click', (e) => {
-                console.log(e.target.parentElement.querySelector('input').value);
                 socket.emit('JOIN_ROOM', {
                     roomId: e.target.parentElement.getAttribute('data-room-id'),
                     userId: e.target.parentElement.querySelector('input').value

@@ -6,12 +6,16 @@ const {
     UPDATE_ROOMS_EVENT,
     SERVER_PORT,
     JOIN_ROOM_EVENT,
+    ADD_QUESTION_EVENT,
+    UPDATE_QUESTIONS_EVENT,
+    ADMIN_JOIN_ROOM_EVENT,
     isValidRoom,
     getRoom
 } = require('./helper/helper')
 const bodyParser = require('body-parser');
 const Room = require("./models/room");
 const RoomUser = require("./models/room_user");
+const Question = require("./models/question");
 
 const app = express();
 const allRooms = [];
@@ -38,7 +42,7 @@ app.get('/admin/:roomId', (req, res) => {
     const data = {title: 'Admin Quiz Page', isValidRoom: validRoom};
 
     if (validRoom) {
-      data['room'] = getRoom(roomId, allRooms);
+        data['room'] = getRoom(roomId, allRooms);
     }
 
     res.render('quizEdit', data);
@@ -53,7 +57,7 @@ app.post('/admin', (req, res) => {
     roomUpdateEventEmitter.emit(NEW_ROOM_ADDED_EVENT, {rooms: allRooms, newRoom: room});
 
     res.render('admin', {title: 'Admin Page'});
-})
+});
 
 const io = socketio(expressServer);
 
@@ -70,6 +74,19 @@ io.of('default').on('connection', (socket) => {
             rooms: rooms,
             newRoom: newRoom
         });
+    });
+
+    socket.on(ADD_QUESTION_EVENT, (data, roomId) => {
+        const room = getRoom(roomId, allRooms);
+        const question = new Question(data.question, data.options, data.answer);
+        room.addQuestion(question);
+        io.to(roomId).emit(UPDATE_QUESTIONS_EVENT, room.questions);
+    });
+
+    socket.on(ADMIN_JOIN_ROOM_EVENT, (roomId) => {
+        socket.join(roomId);
+        const room = getRoom(roomId, allRooms);
+        io.to(roomId).emit(UPDATE_QUESTIONS_EVENT, room.questions);
     });
 
     socket.on(JOIN_ROOM_EVENT, ({roomId, userId}, callBack) => {

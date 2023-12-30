@@ -1,8 +1,12 @@
 const EventEmitter = require('events');
 const roomUpdateEventEmitter = new EventEmitter();
+const adminJoinRoomEventEmitter = new EventEmitter();
 const NEW_ROOM_ADDED_EVENT = 'NEW_ROOM_ADDED';
 const UPDATE_ROOMS_EVENT = 'ROOMS_UPDATED';
 const JOIN_ROOM_EVENT = 'JOIN_ROOM';
+const ADMIN_JOIN_ROOM_EVENT = 'ADMIN_JOIN_ROOM';
+const ADD_QUESTION_EVENT = 'ADD_QUESTION';
+const UPDATE_QUESTIONS_EVENT = 'QUESTION_UPDATED';
 const SERVER_PORT = 8000;
 
 const isValidRoom = (roomId, allRooms) => {
@@ -28,10 +32,14 @@ const getRoom = (roomId, allRooms) => {
 
 module.exports = {
     roomUpdateEventEmitter,
+    adminJoinRoomEventEmitter,
     NEW_ROOM_ADDED_EVENT,
     UPDATE_ROOMS_EVENT,
     SERVER_PORT,
     JOIN_ROOM_EVENT,
+    ADD_QUESTION_EVENT,
+    UPDATE_QUESTIONS_EVENT,
+    ADMIN_JOIN_ROOM_EVENT,
     isValidRoom,
     getRoom
 }
