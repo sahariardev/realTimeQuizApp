@@ -11,7 +11,9 @@ const {
     ADMIN_JOIN_ROOM_EVENT,
     SHOW_QUESTION_EVENT,
     REQUEST_TO_SHOW_QUESTION_EVENT,
+    REQUEST_TO_SHOW_RESULT_EVENT,
     USER_ANSWER_EVENT,
+    SHOW_RESULT_EVENT,
     isValidRoom,
     getRoom
 } = require('./helper/helper')
@@ -66,7 +68,6 @@ app.post('/admin', (req, res) => {
 const io = socketio(expressServer);
 
 io.of('default').on('connection', (socket) => {
-    console.log('Connected new socket connection');
 
     socket.emit(UPDATE_ROOMS_EVENT, {
         rooms: allRooms,
@@ -100,6 +101,13 @@ io.of('default').on('connection', (socket) => {
         const question = room.getQuestion(questionId);
 
         io.of('default').to(roomId).emit(SHOW_QUESTION_EVENT, question);
+    });
+
+    socket.on(REQUEST_TO_SHOW_RESULT_EVENT, () => {
+        const roomId = Object.keys(socket.rooms)[1];
+        const room = getRoom(roomId, allRooms);
+
+        io.of('default').to(roomId).emit(SHOW_RESULT_EVENT, room.getResult());
     });
 
     socket.on(USER_ANSWER_EVENT, (data) => {

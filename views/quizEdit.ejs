@@ -36,6 +36,10 @@
         <div class="question-container section-container">
 
         </div>
+
+        <div class="">
+            <button type="button" id="show-result-btn">Show Result</button>
+        </div>
     </div>
 </div>
 <script>
@@ -46,6 +50,7 @@
     });
 
     const addNewOptionBtn = document.getElementById('add-new-option-btn');
+    const showResultBtn = document.getElementById('show-result-btn');
     const roomTitleElem = document.getElementById('room-title');
     const addQuestion = document.getElementById('add-question');
     const additionOptionSection = document.querySelector('.additional-option');
@@ -55,6 +60,10 @@
     const roomId = roomTitleElem.getAttribute('data-room-id');
 
     socket.emit('ADMIN_JOIN_ROOM', roomId);
+
+    showResultBtn.addEventListener('click', () => {
+      socket.emit('REQUEST_TO_SHOW_RESULT');
+    });
 
     addNewOptionBtn.addEventListener('click', () => {
         const optionSectionDiv = document.createElement('div');

@@ -37,6 +37,10 @@
             renderQuestion(question);
         });
 
+        socket.on('SHOW_RESULT', (result) => {
+            renderResult(result);
+        });
+
         backToRoomBtn.addEventListener('click', () => {
             roomsContainerHtml.classList.remove('hide');
             quizContainerHtml.classList.add('hide');
@@ -126,6 +130,10 @@
             });
 
             quizBodyHtml.append(buttonDiv);
+        }
+
+        const renderResult = (result) => {
+            console.log(result);
         }
 
         const showWait = () => {

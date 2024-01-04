@@ -42,6 +42,22 @@ class Room {
         const user = this.getRoomUser(userId);
         user.addAnswer(userAnswer);
     }
+
+    getResult() {
+        const userPoints = [];
+
+        for (const user of this.roomUsers) {
+            userPoints.push({
+                name: user.name,
+                userId: user.id,
+                points: user.getPoints();
+            });
+        }
+
+        userPoints.sort((up1, up2)=> up2.points - up1.points);
+
+        return userPoints;
+    }
 }
 
 module.exports = Room;
