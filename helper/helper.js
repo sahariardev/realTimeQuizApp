@@ -15,8 +15,7 @@ const USER_ANSWER_EVENT = 'USER_ANSWER';
 const SERVER_PORT = 8000;
 
 const isValidRoom = (roomId, allRooms) => {
-    console.log(roomId);
-    for (room of allRooms) {
+    for (const room of allRooms) {
         if (room.roomId == roomId) {
             return true;
         }
@@ -26,7 +25,7 @@ const isValidRoom = (roomId, allRooms) => {
 }
 
 const getRoom = (roomId, allRooms) => {
-    for (room of allRooms) {
+    for (const room of allRooms) {
         if (room.roomId == roomId) {
             return room;
         }

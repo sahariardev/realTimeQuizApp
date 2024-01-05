@@ -50,7 +50,7 @@ class Room {
             userPoints.push({
                 name: user.name,
                 userId: user.id,
-                points: user.getPoints();
+                points: user.getPoints()
             });
         }
 

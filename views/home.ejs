@@ -15,8 +15,12 @@
             <div class="btn" id="back-to-room-btn">Back To Rooms</div>
         </div>
     </div>
+    <div id="result-container" class="hide"></div>
+    <div id="wait-container" class="hide"></div>
     <script>
         const roomsContainerHtml = document.getElementById('rooms-container');
+        const resultContainerHtml = document.getElementById('result-container');
+        const waitContainerHtml = document.getElementById('wait-container');
         const quizContainerHtml = document.getElementById('quiz-container');
         const backToRoomBtn = document.getElementById('back-to-room-btn');
         const quizBodyHtml = document.getElementById('quiz-body');
@@ -93,6 +97,8 @@
         }
 
         const renderQuestion = ({question, options, id}) => {
+            hideWaitView();
+            hideResultView();
             quizBodyHtml.innerHTML = '';
             const questionDiv = document.createElement('div');
             questionDiv.classList.add('question');
@@ -119,21 +125,61 @@
 
             quizBodyHtml.append(optionDiv);
 
-            const buttonDiv = document.createElement('div');
-            buttonDiv.classList.add('btn');
-            buttonDiv.innerHTML = 'Submit';
+            const submitBtnDiv = document.createElement('div');
+            submitBtnDiv.classList.add('btn');
+            submitBtnDiv.innerHTML = 'Submit';
 
-            buttonDiv.addEventListener('click', (e) => {
+            submitBtnDiv.addEventListener('click', (e) => {
                 const answer = document.querySelector('input[name="' + id + '"]:checked').value;
                 socket.emit('USER_ANSWER', {questionId: id, answer: answer});
-                showWait();
+                hideQuizView();
+                showWaitView();
             });
 
-            quizBodyHtml.append(buttonDiv);
+            quizBodyHtml.append(submitBtnDiv);
+        }
+
+        const hideQuizView = () => {
+            quizContainerHtml.classList.add('hide');
+            quizContainerHtml.classList.remove('flex');
+        }
+
+        const showQuizView = () => {
+            quizContainerHtml.classList.remove('hide');
+            quizContainerHtml.classList.add('flex');
+        }
+
+        const hideResultView = () => {
+            resultContainerHtml.classList.add('hide');
+        }
+
+        const showResultView = () => {
+            resultContainerHtml.classList.remove('hide');
+        }
+
+        const hideWaitView = () => {
+            waitContainerHtml.classList.add('hide');
+        }
+
+        const showWaitView = () => {
+            waitContainerHtml.classList.remove('hide');
         }
 
         const renderResult = (result) => {
-            console.log(result);
+            hideQuizView();
+            hideWaitView();
+
+            resultContainerHtml.innerHTML = '';
+            const resultDiv = document.createElement('div');
+            resultDiv.classList.add('text-left');
+            let rank = 0;
+            for (const r of result) {
+                rank++;
+                resultDiv.append(getPointDiv(r, rank));
+            }
+
+            resultContainerHtml.append(resultDiv);
+            showResultView();
         }
 
         const showWait = () => {
@@ -141,6 +187,13 @@
             waitSpan.classList.add('wait-container')
             quizBodyHtml.innerHTML = '';
             quizBodyHtml.append(waitSpan);
+        }
+
+        const getPointDiv = ({userId, points}, rank) => {
+           const pointContainerDiv = document.createElement('div');
+           pointContainerDiv.innerHTML = `${rank} ${userId} (${points})`;
+
+           return pointContainerDiv;
         }
 
     </script>
