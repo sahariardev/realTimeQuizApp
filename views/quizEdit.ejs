@@ -40,6 +40,11 @@
         <div class="">
             <button type="button" id="show-result-btn">Show Result</button>
         </div>
+
+        <div class="current-user-window section-container">
+
+        </div>
+
     </div>
 </div>
 <script>
@@ -58,11 +63,21 @@
     const answerInput = document.querySelector('.answer');
     const questionContainerElem = document.querySelector('.question-container');
     const roomId = roomTitleElem.getAttribute('data-room-id');
+    const currentUserWindowHtml = document.querySelector('.current-user-window');
 
     socket.emit('ADMIN_JOIN_ROOM', roomId);
 
+    socket.on('SHOW_QUESTION', (question) => {
+        renderQuestionInCurrentWindowView(question);
+    });
+
+    socket.on('SHOW_RESULT', (result) => {
+        console.log(result);
+        renderResultInCurrentWindowView(result);
+    });
+
     showResultBtn.addEventListener('click', () => {
-      socket.emit('REQUEST_TO_SHOW_RESULT');
+        socket.emit('REQUEST_TO_SHOW_RESULT');
     });
 
     addNewOptionBtn.addEventListener('click', () => {
@@ -170,6 +185,34 @@
         divElem.append(btnElem);
 
         questionContainerElem.append(divElem);
+    }
+
+    const renderQuestionInCurrentWindowView = ({question}) => {
+        currentUserWindowHtml.innerHTML = '';
+        const questionDiv = document.createElement('div');
+        questionDiv.classList.add('question');
+        questionDiv.innerHTML = question;
+        currentUserWindowHtml.append(questionDiv);
+    }
+
+    const renderResultInCurrentWindowView = (result) => {
+        currentUserWindowHtml.innerHTML = '';
+        const resultDiv = document.createElement('div');
+        resultDiv.classList.add('text-left');
+        let rank = 0;
+        for (const r of result) {
+            rank++;
+            resultDiv.append(getPointDiv(r, rank));
+        }
+
+        currentUserWindowHtml.append(resultDiv);
+    }
+
+    const getPointDiv = ({userId, points}, rank) => {
+        const pointContainerDiv = document.createElement('div');
+        pointContainerDiv.innerHTML = `${rank} ${userId} (${points})`;
+
+        return pointContainerDiv;
     }
 
 </script>
