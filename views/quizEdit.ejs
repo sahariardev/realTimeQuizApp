@@ -5,40 +5,41 @@
     <div class="section-body-container">
         <div class="question-form-container section-container">
             <div>
-                <div class="question-sections">
-                    <span>Question</span>
-                    <input type="text" name="question" class="question" placeholder="Question">
+                <div class="question-sections form-input-group">
+                    <span class="form-title">Question</span>
+                    <input class="form-input" type="text" name="question" class="question" placeholder="Question">
                 </div>
 
-                <div class="question-sections">
-                    <span class="option-title">Option 1</span>
-                    <input type="text" class="options">
+                <div class="question-sections form-input-group">
+                    <span class="option-title form-title">Option 1</span>
+                    <input class="form-input" type="text" class="options">
                 </div>
 
-                <div class="question-sections">
-                    <span class="option-title">Option 2</span>
-                    <input type="text" class="options">
+                <div class="question-sections form-input-group">
+                    <span class="option-title form-title">Option 2</span>
+                    <input class="form-input" type="text" class="options">
                 </div>
 
                 <div class="additional-option">
 
                 </div>
 
-                <div class="answer-sections">
-                    <span class="title">Answer</span>
-                    <input type="text" class="answer">
+                <div class="answer-sections form-input-group">
+                    <span class="title form-title">Answer</span>
+                    <input class="form-input" type="text" class="answer">
                 </div>
 
-                <button type="button" id="add-new-option-btn">Add New Option</button>
-                <button type="button" id="add-question">Add Question</button>
+                <div class="quiz-btn-container">
+                    <button type="button" id="add-new-option-btn">Add New Option</button>
+                    <button type="button" id="add-question">Add Question</button>
+                    <button type="button" id="show-result-btn">Show Result</button>
+
+                </div>
+
             </div>
         </div>
         <div class="question-container section-container">
 
-        </div>
-
-        <div class="">
-            <button type="button" id="show-result-btn">Show Result</button>
         </div>
 
         <div class="current-user-window section-container">
@@ -72,7 +73,6 @@
     });
 
     socket.on('SHOW_RESULT', (result) => {
-        console.log(result);
         renderResultInCurrentWindowView(result);
     });
 
@@ -83,15 +83,18 @@
     addNewOptionBtn.addEventListener('click', () => {
         const optionSectionDiv = document.createElement('div');
         optionSectionDiv.classList.add('question-sections');
+        optionSectionDiv.classList.add('form-input-group');
 
         const optionTitleSpan = document.createElement('span');
         optionTitleSpan.classList.add('option-title');
+        optionTitleSpan.classList.add('form-title');
         const optionInput = document.createElement('input');
         optionInput.classList.add('options');
+        optionInput.classList.add('form-input');
         optionInput.setAttribute('type', 'text');
 
         const removeLink = document.createElement('a');
-        removeLink.innerHTML = 'Remove';
+        removeLink.innerHTML = 'X';
         removeLink.classList.add('remove-link');
 
         removeLink.addEventListener('click', (e) => {
